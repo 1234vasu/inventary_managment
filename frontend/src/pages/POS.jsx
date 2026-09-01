@@ -13,7 +13,13 @@ import {
   CheckCircle,
   AlertTriangle,
   Printer,
-  X
+  X,
+  CreditCard,
+  Banknote,
+  QrCode,
+  Sparkles,
+  Barcode,
+  PackageCheck
 } from 'lucide-react';
 
 const POS = () => {
@@ -182,21 +188,41 @@ const POS = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="no-print">
-        <h2 className="text-3xl font-extrabold tracking-tight dark:text-white">POS Cashier Terminal</h2>
-        <p className="text-slate-500 dark:text-slate-400 mt-1">Scan barcodes or search catalogue items to compile a checkout invoice.</p>
+    <div className="space-y-6 animate-fade-in">
+      {/* Top Banner */}
+      <div className="no-print p-6 rounded-3xl bg-white/70 dark:bg-[#111827]/70 midnight:bg-[#070b14]/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center space-x-2 text-xs font-extrabold text-primary-500 uppercase tracking-wider mb-0.5">
+            <Barcode className="w-4 h-4" />
+            <span>High-Speed Checkout Hub</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Smart Cashier POS
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Scan hardware barcodes or lookup catalog products for instant bill generation.
+          </p>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <div className="px-4 py-2 rounded-2xl bg-primary-500/10 border border-primary-500/20 text-primary-500 text-xs font-bold flex items-center space-x-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Cart Items: {cart.reduce((sum, i) => sum + i.quantity, 0)}</span>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start no-print">
         {/* Left Side: Product Selector (Search & Results) */}
         <div className="xl:col-span-2 space-y-6">
           <div className="premium-card p-6">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Add Items</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Product Catalog & Scanner</h3>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Press Enter after scan</span>
+            </div>
             
             <form onSubmit={handleBarcodeSubmit} className="relative mb-6">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                 <Search className="w-5 h-5" />
               </span>
               <input
@@ -204,42 +230,59 @@ const POS = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Scan Barcode or Search Product by Name..."
-                className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition text-sm"
+                placeholder="Scan barcode or type product name / SKU..."
+                className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition text-sm font-medium"
                 autoFocus
               />
             </form>
 
             {/* Search Results Drawer */}
             {searchResults.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[50vh] overflow-y-auto pr-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[48vh] overflow-y-auto pr-1 custom-scrollbar">
                 {searchResults.map((prod) => (
                   <div
                     key={prod._id}
                     onClick={() => addToCart(prod)}
-                    className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between cursor-pointer hover:border-primary-400 dark:hover:border-primary-500/50 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition"
+                    className="p-4 bg-slate-50/70 hover:bg-slate-100/90 dark:bg-slate-900/50 dark:hover:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl flex items-center justify-between cursor-pointer hover:border-primary-500/50 hover:shadow-md transition-all group"
                   >
-                    <div>
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white">{prod.name}</h4>
+                    <div className="space-y-0.5">
+                      <h4 className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors">
+                        {prod.name}
+                      </h4>
                       <span className="text-[10px] text-slate-400 font-mono block">Barcode: {prod.barcode}</span>
-                      <span className="text-xs text-primary-600 dark:text-primary-400 font-bold block mt-1">
+                      <span className="text-sm text-primary-500 font-black block pt-0.5">
                         ${prod.price.toFixed(2)}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <span className={`text-xs font-bold ${prod.quantity <= prod.minStockThreshold ? 'text-red-500' : 'text-slate-500'}`}>
+                    <div className="text-right flex flex-col items-end">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
+                          prod.quantity <= (prod.minStockThreshold || 5)
+                            ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                            : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                        }`}
+                      >
                         {prod.quantity} Left
                       </span>
+                      <button className="mt-2 p-1.5 rounded-xl bg-primary-500/10 text-primary-500 group-hover:bg-primary-500 group-hover:text-white transition-all shadow-sm">
+                        <Plus className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : searchQuery.trim().length > 0 ? (
-              <div className="text-center py-8 text-slate-400 text-sm">No products found.</div>
+              <div className="text-center py-12 text-slate-400 text-xs">
+                No matching product found with that name or barcode.
+              </div>
             ) : (
-              <div className="text-center py-20 text-slate-450 flex flex-col items-center justify-center space-y-3">
-                <ShoppingCart className="w-12 h-12 text-slate-300 dark:text-slate-700" />
-                <p className="text-sm font-medium">Scan product barcode or use search input above.</p>
+              <div className="text-center py-16 text-slate-400 flex flex-col items-center justify-center space-y-3">
+                <div className="p-4 rounded-3xl bg-slate-100 dark:bg-slate-900/60 text-slate-300 dark:text-slate-700">
+                  <ShoppingCart className="w-10 h-10" />
+                </div>
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Ready for scanning. Scan barcode or type product name above.
+                </p>
               </div>
             )}
           </div>
@@ -247,52 +290,65 @@ const POS = () => {
           {/* Cart Table */}
           {cart.length > 0 && (
             <div className="premium-card p-6 overflow-hidden">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Cart items</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  Active Cart ({cart.length} unique items)
+                </h3>
+                <button
+                  onClick={() => setCart([])}
+                  className="text-xs text-red-500 hover:text-red-600 font-bold transition flex items-center gap-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Clear Cart
+                </button>
+              </div>
+
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-800/80 text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                      <th className="py-3 px-4">Item</th>
-                      <th className="py-3 px-4 text-center">Price</th>
-                      <th className="py-3 px-4 text-center">Qty</th>
+                    <tr className="border-b border-slate-200/80 dark:border-slate-800/80 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                      <th className="py-3 px-4">Item & Barcode</th>
+                      <th className="py-3 px-4 text-center">Unit Price</th>
+                      <th className="py-3 px-4 text-center">Quantity</th>
                       <th className="py-3 px-4 text-right">Subtotal</th>
-                      <th className="py-3 px-4 text-right">Actions</th>
+                      <th className="py-3 px-4 text-right">Remove</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {cart.map((item) => (
-                      <tr key={item.productId} className="hover:bg-slate-50 dark:hover:bg-slate-800/10">
-                        <td className="py-4 px-4">
+                      <tr key={item.productId} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+                        <td className="py-3.5 px-4">
                           <span className="font-bold text-slate-900 dark:text-white block">{item.name}</span>
-                          <span className="text-[10px] text-slate-400 font-mono font-normal">Barcode: {item.barcode}</span>
+                          <span className="text-[10px] text-slate-400 font-mono">Barcode: {item.barcode}</span>
                         </td>
-                        <td className="py-4 px-4 text-center font-bold">${item.price.toFixed(2)}</td>
-                        <td className="py-4 px-4">
-                          <div className="flex items-center justify-center space-x-2">
+                        <td className="py-3.5 px-4 text-center font-bold text-slate-900 dark:text-white">
+                          ${item.price.toFixed(2)}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <div className="flex items-center justify-center space-x-1.5">
                             <button
                               onClick={() => updateQuantity(item.productId, -1)}
-                              className="p-1 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white rounded"
+                              className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-white rounded-xl transition"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
-                            <span className="w-8 text-center font-bold">{item.quantity}</span>
+                            <span className="w-8 text-center font-black text-sm">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.productId, 1)}
-                              className="p-1 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white rounded"
+                              className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-white rounded-xl transition"
                             >
                               <Plus className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </td>
-                        <td className="py-4 px-4 text-right font-bold text-slate-900 dark:text-white">
+                        <td className="py-3.5 px-4 text-right font-black text-primary-500">
                           ${(item.price * item.quantity).toFixed(2)}
                         </td>
-                        <td className="py-4 px-4 text-right">
+                        <td className="py-3.5 px-4 text-right">
                           <button
                             onClick={() => removeFromCart(item.productId)}
-                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition"
+                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition"
                           >
-                            <Trash2 className="w-4.5 h-4.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </td>
                       </tr>
@@ -308,22 +364,29 @@ const POS = () => {
         <div className="space-y-6">
           <div className="premium-card p-6 flex flex-col justify-between">
             <div className="space-y-5">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
-                Checkout Summary
-              </h3>
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  Payment & Invoice
+                </h3>
+                <span className="text-[10px] font-black uppercase tracking-wider text-primary-500 bg-primary-500/10 px-2 py-0.5 rounded-md">
+                  Terminal 01
+                </span>
+              </div>
 
               {checkoutError && (
-                <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/30 text-red-500 rounded-xl text-xs flex items-center space-x-2">
+                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-xs flex items-center space-x-2">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
-                  <span>{checkoutError}</span>
+                  <span className="font-semibold">{checkoutError}</span>
                 </div>
               )}
 
               {/* Customer Name */}
               <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Customer Name</label>
+                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                  Customer Name
+                </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                     <User className="w-4 h-4" />
                   </span>
                   <input
@@ -331,35 +394,40 @@ const POS = () => {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="Walk-in Customer"
-                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-850 dark:text-white focus:outline-none focus:border-primary-500 text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white focus:outline-none focus:border-primary-500 text-xs font-medium"
                   />
                 </div>
               </div>
 
               {/* Customer Contact */}
               <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Contact Number</label>
+                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                  Contact Number
+                </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                     <Phone className="w-4 h-4" />
                   </span>
                   <input
                     type="text"
                     value={customerContact}
                     onChange={(e) => setCustomerContact(e.target.value)}
-                    placeholder="e.g. 555-0199"
-                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-850 dark:text-white focus:outline-none focus:border-primary-500 text-sm"
+                    placeholder="e.g. +1 555-0199"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white focus:outline-none focus:border-primary-500 text-xs font-medium"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              {/* Discount & Payment Mode */}
+              <div className="grid grid-cols-2 gap-3">
                 {/* Discount */}
                 <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Discount ($)</label>
+                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                    Discount ($)
+                  </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Percent className="w-4 h-4" />
+                      <Percent className="w-3.5 h-3.5" />
                     </span>
                     <input
                       type="number"
@@ -367,45 +435,47 @@ const POS = () => {
                       value={discount}
                       onChange={(e) => setDiscount(e.target.value)}
                       placeholder="0.00"
-                      className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-850 dark:text-white focus:outline-none focus:border-primary-500 text-xs"
+                      className="w-full pl-8 pr-3 py-2.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white focus:outline-none focus:border-primary-500 text-xs font-medium"
                     />
                   </div>
                 </div>
 
                 {/* Payment Mode */}
                 <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Payment Mode</label>
+                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                    Payment Method
+                  </label>
                   <select
                     value={paymentMode}
                     onChange={(e) => setPaymentMode(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-850 dark:text-white focus:outline-none focus:border-primary-500 text-xs"
+                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white focus:outline-none focus:border-primary-500 text-xs font-bold"
                   >
                     <option value="Cash">Cash</option>
                     <option value="Card">Card</option>
-                    <option value="UPI">UPI</option>
+                    <option value="UPI">UPI / Digital</option>
                   </select>
                 </div>
               </div>
 
               {/* Subtotal, tax, net calculations */}
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-2 text-xs font-semibold">
-                <div className="flex justify-between text-slate-500">
-                  <span>Subtotal</span>
+              <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 space-y-2 text-xs font-bold">
+                <div className="flex justify-between text-slate-500 dark:text-slate-400">
+                  <span>Gross Subtotal</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Tax ({taxRate}%)</span>
+                <div className="flex justify-between text-slate-500 dark:text-slate-400">
+                  <span>Sales Tax ({taxRate}%)</span>
                   <span>${taxVal.toFixed(2)}</span>
                 </div>
                 {discountVal > 0 && (
                   <div className="flex justify-between text-rose-500">
-                    <span>Discount</span>
+                    <span>Discount Applied</span>
                     <span>-${discountVal.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-base font-extrabold text-slate-900 dark:text-white pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between text-lg font-black text-slate-900 dark:text-white pt-3 border-t border-slate-200/80 dark:border-slate-800/80">
                   <span>Total Due</span>
-                  <span>${total < 0 ? '0.00' : total.toFixed(2)}</span>
+                  <span className="text-primary-500">${total < 0 ? '0.00' : total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -414,9 +484,16 @@ const POS = () => {
             <button
               onClick={handleCheckout}
               disabled={cart.length === 0 || processing}
-              className="w-full mt-6 py-3.5 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl shadow-lg shadow-primary-500/20 hover:shadow-primary-500/30 transition duration-200 focus:outline-none disabled:opacity-50 text-sm"
+              className="w-full mt-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-600 text-white font-black rounded-2xl shadow-xl shadow-primary-500/25 hover:shadow-primary-500/40 hover:scale-[1.01] active:scale-95 transition duration-200 focus:outline-none disabled:opacity-50 text-sm flex items-center justify-center space-x-2"
             >
-              {processing ? 'Processing...' : 'Finalize & Checkout'}
+              {processing ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+              ) : (
+                <>
+                  <PackageCheck className="w-4.5 h-4.5" />
+                  <span>Finalize & Print Bill</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -424,26 +501,26 @@ const POS = () => {
 
       {/* Bill Receipt Modal (Rendered on checkout success) */}
       {isReceiptModalOpen && completedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm px-4 print:relative print:bg-white print:inset-0 print:p-0">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden print:shadow-none print:border-none print:max-w-full">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md px-4 print:relative print:bg-white print:inset-0 print:p-0 animate-fade-in">
+          <div className="bg-white dark:bg-[#111827] midnight:bg-[#070b14] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden print:shadow-none print:border-none print:max-w-full animate-scale-in">
             {/* Modal actions (Hide in print mode) */}
-            <div className="px-6 py-4.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between no-print">
-              <h3 className="text-sm font-extrabold uppercase tracking-widest text-primary-500 flex items-center space-x-1.5">
-                <CheckCircle className="w-4.5 h-4.5 text-emerald-500" />
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between no-print bg-slate-50/50 dark:bg-slate-900/40">
+              <h3 className="text-xs font-black uppercase tracking-widest text-primary-500 flex items-center space-x-1.5">
+                <CheckCircle className="w-4 h-4 text-emerald-500" />
                 <span>Transaction Complete</span>
               </h3>
               <button
                 onClick={() => setIsReceiptModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
 
             {/* Paper Bill content */}
             <div className="p-6 font-mono text-xs text-slate-800 dark:text-slate-200 space-y-4 print:p-0">
-              <div className="text-center space-y-1">
-                <h4 className="font-extrabold text-base uppercase">Smart Retail Store</h4>
+              <div className="text-center space-y-0.5">
+                <h4 className="font-black text-base uppercase tracking-tight">Smart Retail Store</h4>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400">123 Supermarket Ave, Tech Hub</p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400">TEL: +1-800-RET-DEV</p>
               </div>
@@ -508,29 +585,29 @@ const POS = () => {
                     <span>-${completedOrder.discount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-sm font-extrabold pt-1.5 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
-                  <span>NET AMOUNT:</span>
+                <div className="flex justify-between text-sm font-black pt-1.5 border-t border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+                  <span>NET PAID:</span>
                   <span>${completedOrder.netAmount.toFixed(2)}</span>
                 </div>
               </div>
 
               <div className="text-center pt-4 border-t border-dashed border-slate-300 dark:border-slate-700">
                 <p className="text-[10px] uppercase font-bold text-slate-500">Thank You For Shopping!</p>
-                <p className="text-[9px] text-slate-400">Please retain receipt for returns.</p>
+                <p className="text-[9px] text-slate-400">Please retain receipt for warranty & returns.</p>
               </div>
             </div>
 
             {/* Print and Close controls (Hide in print mode) */}
-            <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex space-x-3 no-print bg-slate-50 dark:bg-slate-900/50">
+            <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex space-x-3 no-print bg-slate-50 dark:bg-slate-900/50">
               <button
                 onClick={() => setIsReceiptModalOpen(false)}
-                className="flex-1 py-2 bg-slate-200 dark:bg-slate-800 text-slate-850 dark:text-slate-200 font-bold rounded-xl transition text-xs text-center"
+                className="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-xl transition text-xs text-center"
               >
-                Close Panel
+                Close
               </button>
               <button
                 onClick={triggerPrint}
-                className="flex-1 py-2 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow transition text-xs"
+                className="flex-1 py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow-lg shadow-primary-500/25 transition text-xs"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Print Bill</span>

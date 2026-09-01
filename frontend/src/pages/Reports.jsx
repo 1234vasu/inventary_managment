@@ -7,7 +7,9 @@ import {
   Search,
   AlertTriangle,
   FileBarChart,
-  RefreshCw
+  RefreshCw,
+  Sparkles,
+  TrendingUp
 } from 'lucide-react';
 
 const Reports = () => {
@@ -45,17 +47,9 @@ const Reports = () => {
   }, [startDate, endDate]);
 
   const handleExport = (format) => {
-    const token = localStorage.getItem('token');
-    // Build query URL
     let url = `http://localhost:5000/api/reports/export/${format}?`;
     if (startDate) url += `startDate=${startDate}&`;
     if (endDate) url += `endDate=${endDate}&`;
-    // We append authorization token in URL parameter or open directly if backend allows it.
-    // Wait, our backend endpoints require authentication.
-    // Since browser downloads are triggered by direct link navigation, we can download the file
-    // using Axios with authorization headers and write a blob helper to trigger save in browser!
-    // This is clean, secure, and works with JWT headers without putting credentials in the URL!
-    // Let's implement this blob helper:
     triggerSecureDownload(url, format);
   };
 
@@ -79,22 +73,27 @@ const Reports = () => {
   const totalRevenue = sales.reduce((sum, s) => sum + s.netAmount, 0);
 
   return (
-    <div className="space-y-6">
-      {/* Header and Download Buttons */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="space-y-6 animate-fade-in">
+      {/* Top Banner */}
+      <div className="p-6 rounded-3xl bg-white/70 dark:bg-[#111827]/70 midnight:bg-[#070b14]/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 shadow-soft flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-extrabold tracking-tight dark:text-white flex items-center space-x-2.5">
-            <FileBarChart className="w-8 h-8 text-primary-600 dark:text-primary-500" />
-            <span>Store Transaction Reports</span>
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">Review historical transactions, analyze payment modes, and download audit sheets.</p>
+          <div className="flex items-center space-x-2 text-xs font-extrabold text-primary-500 uppercase tracking-wider mb-0.5">
+            <FileBarChart className="w-4 h-4" />
+            <span>Audit & Financial Ledger</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Store Transaction Reports
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Review historical transactions, analyze payment channels, and generate formatted export sheets.
+          </p>
         </div>
 
         {sales.length > 0 && (
           <div className="flex items-center space-x-3">
             <button
               onClick={() => handleExport('excel')}
-              className="px-4 py-2.5 bg-slate-200 dark:bg-slate-800 text-slate-850 dark:text-slate-200 font-bold rounded-xl flex items-center space-x-2 border border-slate-300 dark:border-slate-700 hover:bg-slate-300 dark:hover:bg-slate-700 transition text-xs"
+              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl flex items-center space-x-2 border border-slate-200 dark:border-slate-700 transition text-xs shadow-sm"
             >
               <Download className="w-4 h-4 text-slate-500" />
               <span>Export Excel</span>
@@ -102,7 +101,7 @@ const Reports = () => {
             
             <button
               onClick={() => handleExport('pdf')}
-              className="px-4 py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl flex items-center space-x-2 shadow-lg shadow-primary-500/20 transition text-xs"
+              className="px-4 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-600 text-white font-bold rounded-2xl flex items-center space-x-2 shadow-lg shadow-primary-500/25 transition text-xs"
             >
               <FileText className="w-4 h-4" />
               <span>Download PDF</span>
@@ -113,29 +112,29 @@ const Reports = () => {
 
       {/* Date Filters bar */}
       <div className="premium-card p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center space-x-3 text-slate-500">
-          <Calendar className="w-4 h-4 text-slate-400" />
+        <div className="flex items-center space-x-2 text-slate-500">
+          <Calendar className="w-4 h-4 text-primary-500" />
           <span className="text-xs font-extrabold uppercase tracking-wider">Date Filters</span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center space-x-2">
-            <span className="text-xs text-slate-450">Start:</span>
+            <span className="text-xs text-slate-400 font-bold">From:</span>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-800 dark:text-white text-xs font-bold focus:outline-none"
+              className="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-xs font-bold focus:outline-none focus:border-primary-500"
             />
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="text-xs text-slate-450">End:</span>
+            <span className="text-xs text-slate-400 font-bold">To:</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-800 dark:text-white text-xs font-bold focus:outline-none"
+              className="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-xs font-bold focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -144,7 +143,7 @@ const Reports = () => {
               setStartDate('');
               setEndDate('');
             }}
-            className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-650 dark:hover:text-slate-200 rounded-lg transition"
+            className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl transition"
             title="Reset Filters"
           >
             <RefreshCw className="w-4 h-4" />
@@ -155,17 +154,17 @@ const Reports = () => {
       {/* Stats Summary cards */}
       {sales.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="premium-card p-5 bg-white/50">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450">Total Orders</span>
-            <h4 className="text-xl font-bold text-slate-900 dark:text-white mt-1">{sales.length} transactions</h4>
+          <div className="premium-card p-5">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Transactions</span>
+            <h4 className="text-2xl font-black text-slate-900 dark:text-white mt-1">{sales.length} orders</h4>
           </div>
-          <div className="premium-card p-5 bg-white/50">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450">Total Discounts Given</span>
-            <h4 className="text-xl font-bold text-rose-500 mt-1">${totalDiscount.toFixed(2)}</h4>
+          <div className="premium-card p-5">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Discounts Granted</span>
+            <h4 className="text-2xl font-black text-rose-500 mt-1">${totalDiscount.toFixed(2)}</h4>
           </div>
-          <div className="premium-card p-5 bg-white/50">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450">Total Net Revenue</span>
-            <h4 className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${totalRevenue.toFixed(2)}</h4>
+          <div className="premium-card p-5">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Net Audited Revenue</span>
+            <h4 className="text-2xl font-black text-emerald-500 mt-1">${totalRevenue.toFixed(2)}</h4>
           </div>
         </div>
       )}
@@ -173,52 +172,52 @@ const Reports = () => {
       {/* Reports Table list */}
       <div className="premium-card overflow-hidden">
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center">
+          <div className="py-20 flex flex-col items-center justify-center space-y-3">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-            <p className="text-slate-400 mt-3 text-sm">Loading transaction records...</p>
+            <p className="text-slate-400 text-xs font-bold">Loading transaction records...</p>
           </div>
         ) : error ? (
-          <div className="py-10 text-center text-red-500">{error}</div>
+          <div className="py-10 text-center text-red-500 text-xs font-semibold">{error}</div>
         ) : sales.length === 0 ? (
-          <div className="py-20 text-center text-slate-400 text-sm">No transactions registered in this period.</div>
+          <div className="py-20 text-center text-slate-400 text-xs font-medium">No transactions found for the selected dates.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800/80 text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  <th className="py-3.5 px-6">Date</th>
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                  <th className="py-3.5 px-6">Timestamp</th>
                   <th className="py-3.5 px-6">Invoice Number</th>
-                  <th className="py-3.5 px-6">Cashier</th>
-                  <th className="py-3.5 px-6">Customer Name</th>
-                  <th className="py-3.5 px-6 text-center">Payment Mode</th>
+                  <th className="py-3.5 px-6">Cashier Agent</th>
+                  <th className="py-3.5 px-6">Customer</th>
+                  <th className="py-3.5 px-6 text-center">Payment Channel</th>
                   <th className="py-3.5 px-6 text-right">Discount</th>
                   <th className="py-3.5 px-6 text-right">Net Amount</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {sales.map((order) => (
-                  <tr key={order._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/10">
-                    <td className="py-4 px-6 text-xs font-normal text-slate-400">
+                  <tr key={order._id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="py-4 px-6 text-xs text-slate-400 font-mono">
                       {new Date(order.createdAt).toLocaleString()}
                     </td>
-                    <td className="py-4 px-6 font-bold text-slate-900 dark:text-white">{order.invoiceNumber}</td>
-                    <td className="py-4 px-6 text-xs text-slate-500 dark:text-slate-400">
-                      {order.cashierId?.name || 'Deleted User'}
+                    <td className="py-4 px-6 font-bold text-slate-900 dark:text-white font-mono">{order.invoiceNumber}</td>
+                    <td className="py-4 px-6 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {order.cashierId?.name || 'Authorized Cashier'}
                     </td>
                     <td className="py-4 px-6 text-slate-800 dark:text-slate-200 font-bold">{order.customerName}</td>
                     <td className="py-4 px-6 text-center">
-                      <span className={`px-2 py-0.5 text-[10px] font-extrabold uppercase rounded-lg border ${
+                      <span className={`px-2.5 py-0.5 text-[9px] font-black uppercase rounded-md border ${
                         order.paymentMode === 'UPI'
-                          ? 'bg-blue-50 dark:bg-blue-950/20 text-blue-600 border-blue-100/50 dark:border-blue-900/50'
+                          ? 'bg-blue-500/10 text-blue-500 border-blue-500/20'
                           : order.paymentMode === 'Card'
-                          ? 'bg-purple-50 dark:bg-purple-950/20 text-purple-600 border-purple-100/50 dark:border-purple-900/50'
-                          : 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 border-emerald-100/50 dark:border-emerald-900/50'
+                          ? 'bg-primary-500/10 text-primary-500 border-primary-500/20'
+                          : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                       }`}>
                         {order.paymentMode}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-right text-rose-500">${order.discount.toFixed(2)}</td>
-                    <td className="py-4 px-6 text-right text-emerald-600 dark:text-emerald-400 font-bold">
+                    <td className="py-4 px-6 text-right text-emerald-500 font-black">
                       ${order.netAmount.toFixed(2)}
                     </td>
                   </tr>

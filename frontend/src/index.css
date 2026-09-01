@@ -1,76 +1,241 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* =========================================================
+     DEFAULT THEME: VIOLET (LIGHT / DARK / MIDNIGHT BASE)
+     ========================================================= */
   :root {
+    --primary-50: 245 243 255;
+    --primary-100: 237 233 254;
+    --primary-200: 221 214 254;
+    --primary-300: 196 181 253;
+    --primary-400: 167 139 250;
+    --primary-500: 139 92 246;
+    --primary-600: 124 58 237;
+    --primary-700: 109 40 217;
+    --primary-800: 91 33 182;
+    --primary-900: 76 29 149;
+    --primary-950: 46 16 101;
+    --primary-raw: 139, 92, 246;
+    --primary-hex: #8b5cf6;
+
     --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-tertiary: #f1f5f9;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-glass: rgba(255, 255, 255, 0.7);
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-muted: #94a3b8;
     --border-color: #e2e8f0;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-    --primary-color: 139, 92, 246; /* purple-500 */
-    --accent-glow: rgba(139, 92, 246, 0.08);
+    --border-subtle: rgba(226, 232, 240, 0.8);
+    --border-hover: rgba(var(--primary-500), 0.35);
+    --accent-glow: rgba(139, 92, 246, 0.12);
+    --accent-glow-strong: rgba(139, 92, 246, 0.25);
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
   }
 
+  /* =========================================================
+     DARK MODE (CYBER SLATE)
+     ========================================================= */
   :root.dark {
     --bg-primary: #0b0f19;
     --bg-secondary: #131c2e;
-    --bg-tertiary: #1d293d;
+    --bg-tertiary: #1a2438;
+    --card-bg: rgba(19, 28, 46, 0.85);
+    --card-glass: rgba(19, 28, 46, 0.65);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
-    --border-color: #1e293b;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
-    --primary-color: 167, 139, 250; /* purple-400 */
-    --accent-glow: rgba(167, 139, 250, 0.15);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.04);
+    --border-hover: rgba(var(--primary-400), 0.4);
+    --accent-glow: rgba(139, 92, 246, 0.18);
+    --accent-glow-strong: rgba(139, 92, 246, 0.35);
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  }
+
+  /* =========================================================
+     MIDNIGHT OLED MODE
+     ========================================================= */
+  :root.midnight {
+    --bg-primary: #030712;
+    --bg-secondary: #090e1a;
+    --bg-tertiary: #0f172a;
+    --card-bg: rgba(9, 14, 26, 0.92);
+    --card-glass: rgba(9, 14, 26, 0.75);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #52525b;
+    --border-color: rgba(255, 255, 255, 0.12);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-hover: rgba(var(--primary-400), 0.5);
+    --accent-glow: rgba(139, 92, 246, 0.22);
+    --accent-glow-strong: rgba(139, 92, 246, 0.45);
+    --shadow-soft: 0 4px 25px -2px rgba(0, 0, 0, 0.8);
+    --shadow-card: 0 12px 30px -5px rgba(0, 0, 0, 0.85);
+  }
+
+  /* =========================================================
+     COLOR PALETTE PRESETS (APPLIED VIA CLASS)
+     ========================================================= */
+
+  /* 1. EMERALD MATRIX */
+  :root.theme-emerald {
+    --primary-50: 236 253 245;
+    --primary-100: 209 250 229;
+    --primary-200: 167 243 208;
+    --primary-300: 110 231 183;
+    --primary-400: 52 211 153;
+    --primary-500: 16 185 129;
+    --primary-600: 5 150 105;
+    --primary-700: 4 120 87;
+    --primary-800: 6 95 70;
+    --primary-900: 6 78 59;
+    --primary-950: 2 44 34;
+    --primary-raw: 16, 185, 129;
+    --primary-hex: #10b981;
+    --accent-glow: rgba(16, 185, 129, 0.18);
+    --accent-glow-strong: rgba(16, 185, 129, 0.35);
+  }
+
+  /* 2. ELECTRIC CYAN / AZURE */
+  :root.theme-cyan {
+    --primary-50: 236 254 255;
+    --primary-100: 207 250 254;
+    --primary-200: 165 243 252;
+    --primary-300: 103 232 249;
+    --primary-400: 34 211 238;
+    --primary-500: 6 182 212;
+    --primary-600: 8 145 178;
+    --primary-700: 14 116 144;
+    --primary-800: 21 94 117;
+    --primary-900: 22 78 99;
+    --primary-950: 8 51 68;
+    --primary-raw: 6, 182, 212;
+    --primary-hex: #06b6d4;
+    --accent-glow: rgba(6, 182, 212, 0.18);
+    --accent-glow-strong: rgba(6, 182, 212, 0.35);
+  }
+
+  /* 3. SUNSET FLARE / ROSE */
+  :root.theme-rose {
+    --primary-50: 255 241 242;
+    --primary-100: 255 228 230;
+    --primary-200: 254 205 211;
+    --primary-300: 253 164 175;
+    --primary-400: 251 113 133;
+    --primary-500: 244 63 94;
+    --primary-600: 225 29 72;
+    --primary-700: 190 18 60;
+    --primary-800: 159 18 57;
+    --primary-900: 136 19 55;
+    --primary-950: 76 5 25;
+    --primary-raw: 244, 63, 94;
+    --primary-hex: #f43f5e;
+    --accent-glow: rgba(244, 63, 94, 0.18);
+    --accent-glow-strong: rgba(244, 63, 94, 0.35);
+  }
+
+  /* 4. SOLAR GOLD / AMBER */
+  :root.theme-amber {
+    --primary-50: 255 251 235;
+    --primary-100: 254 243 199;
+    --primary-200: 253 230 138;
+    --primary-300: 252 211 77;
+    --primary-400: 251 191 36;
+    --primary-500: 245 158 11;
+    --primary-600: 217 119 6;
+    --primary-700: 180 83 9;
+    --primary-800: 146 64 14;
+    --primary-900: 120 53 15;
+    --primary-950: 69 26 3;
+    --primary-raw: 245, 158, 11;
+    --primary-hex: #f59e0b;
+    --accent-glow: rgba(245, 158, 11, 0.18);
+    --accent-glow-strong: rgba(245, 158, 11, 0.35);
+  }
+
+  /* 5. CRIMSON NOVA */
+  :root.theme-crimson {
+    --primary-50: 254 242 242;
+    --primary-100: 254 226 226;
+    --primary-200: 254 202 202;
+    --primary-300: 252 165 165;
+    --primary-400: 248 113 113;
+    --primary-500: 239 68 68;
+    --primary-600: 220 38 38;
+    --primary-700: 185 28 28;
+    --primary-800: 153 27 27;
+    --primary-900: 127 29 29;
+    --primary-950: 69 10 10;
+    --primary-raw: 239, 68, 68;
+    --primary-hex: #ef4444;
+    --accent-glow: rgba(239, 68, 68, 0.18);
+    --accent-glow-strong: rgba(239, 68, 68, 0.35);
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: 'Outfit', 'Inter', sans-serif;
+    font-family: 'Outfit', 'Inter', system-ui, sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     overflow-x: hidden;
+    min-height: 100vh;
   }
 }
 
-/* Custom Utilities and Premium UI Classes */
+/* =========================================================
+   CUSTOM UTILITIES & MODERN GLASSMORPHIC CLASSES
+   ========================================================= */
 @layer utilities {
+  /* Glass Card */
   .glass-card {
-    background: rgba(var(--bg-secondary), 0.7);
+    background: var(--card-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Premium Card with Smooth Hover Elevation & Glow */
+  .premium-card {
+    background-color: var(--card-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
-  }
-
-  .premium-card {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-md);
-    border-radius: 1rem;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: var(--shadow-card);
+    border-radius: 1.25rem;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    position: relative;
+    overflow: hidden;
   }
 
   .premium-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: rgba(var(--primary-color), 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px -6px rgba(0, 0, 0, 0.15), 0 0 20px -2px var(--accent-glow);
+    border-color: var(--border-hover);
   }
 
+  /* Interactive Click Effects */
+  .interactive-tap {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  }
+  .interactive-tap:active {
+    transform: scale(0.97);
+  }
+
+  /* Glow Button */
   .glow-button {
     position: relative;
     overflow: hidden;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
   }
 
   .glow-button::after {
@@ -78,11 +243,11 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(var(--primary-color), 0.2) 0%, transparent 70%);
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(circle, rgba(var(--primary-raw), 0.3) 0%, transparent 70%);
     transform: translate(-50%, -50%) scale(0);
-    transition: transform 0.3s ease-out;
+    transition: transform 0.4s ease-out;
     pointer-events: none;
   }
 
@@ -90,6 +255,38 @@
     transform: translate(-50%, -50%) scale(1);
   }
 
+  /* Gradient Text */
+  .gradient-title {
+    background: linear-gradient(135deg, rgb(var(--primary-400)) 0%, rgb(var(--primary-600)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gradient-title-multi {
+    background: linear-gradient(135deg, #ffffff 0%, rgb(var(--primary-300)) 60%, rgb(var(--primary-500)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Neon Outline Glow */
+  .neon-border {
+    box-shadow: 0 0 15px -2px var(--accent-glow), inset 0 0 15px -2px var(--accent-glow);
+  }
+
+  .neon-glow-strong {
+    box-shadow: 0 0 25px 0 var(--accent-glow-strong);
+  }
+
+  /* Shimmering Text Effect */
+  .shimmer-text {
+    background: linear-gradient(90deg, currentColor 0%, rgb(var(--primary-400)) 50%, currentColor 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Hide Scrollbar */
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -99,21 +296,9 @@
   }
 }
 
-/* Print Receipt Styling */
-@media print {
-  body {
-    background: white;
-    color: black;
-  }
-  .no-print {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
-  }
-}
-
-/* Custom Scrollbars */
+/* =========================================================
+   CUSTOM SCROLLBARS
+   ========================================================= */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -124,20 +309,57 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-muted);
-  border-radius: 3px;
+  background: rgba(var(--primary-500), 0.3);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: rgba(var(--primary-500), 0.6);
 }
 
-/* Custom Fade Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* =========================================================
+   ANIMATION KEYFRAMES
+   ========================================================= */
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes floatOrb1 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(0.9); }
+  66% { transform: translate(25px, -35px) scale(1.15); }
+}
+
+.animate-orb-1 {
+  animation: floatOrb1 14s ease-in-out infinite;
+}
+
+.animate-orb-2 {
+  animation: floatOrb2 18s ease-in-out infinite;
+}
+
+/* Custom Print Receipt Styling */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
 }
